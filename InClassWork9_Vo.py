@@ -15,9 +15,16 @@ class Course:
     
     def add_student(self, student):
         if len(self.enrolled_students) < self.max_students:
-            for course in self.prereqs:
-                if course in student.finished_courses:
-                    self.enrolled_students.append(student)
+            print(f"Enrolling {student.name} in {self.name}")
+            for course_code in self.prereqs:
+                print(f"Checking if {student.name} finished {course_code}")
+                for finished_course in student.finished_courses:
+                    if finished_course.code == course_code:
+                        self.enrolled_students.append(student.name)
+                        print(f"{student.name} meets the prerequisites for {self.name}.")
+            if self.prereqs == []:
+                self.enrolled_students.append(student.name)
+
             return True
         else:
             return False
@@ -30,6 +37,9 @@ class Course:
         
     def get_prerequisites(self):
         return self.prereqs
+    
+    def get_enrolled_students(self):
+        return self.enrolled_students
 
 class Student:
     def __init__(self, name, student_id):
@@ -53,10 +63,15 @@ class Student:
         return self.enrolled_courses
        
     def drop_class(self, course_code):
-        if course_code in self.enrolled_courses:
-            self.enrolled_courses.remove(course_code)
+        print(self.enrolled_courses)
+        print(course_code.code)
+        if course_code.code in self.enrolled_courses:
+            self.enrolled_courses.remove(course_code.code)
             print(f"{self.name} has dropped {course_code}.")
-        
+            for self.name in course_code.enrolled_students:
+                course_code.enrolled_students.remove(self.name)
+                print(f"{self.name} has been removed from the enrolled students of {course_code}.")
+                        
        
 # creating an object of the Student class
 emma = Student("Emma", "NU1")
@@ -92,12 +107,18 @@ emma_enrolled = emma.get_enrolled_courses()
 print(emma_enrolled)
 print(" ")
 
+# print students in the class EECE2140
+print(EECE2140.get_enrolled_students())
+
 drop = input("Do you want to drop a class? Type y for yes and anything else for no. ")
 if drop.lower() == 'y':
-    drop_course_code = input("Enter the course code you want to drop: ")
-    if drop_course_code in emma_enrolled:
+    drop_course_code = eval(input("Enter the course code you want to drop: "))
+    if drop_course_code.code in emma_enrolled:
         emma.drop_class(drop_course_code)
         print(f"The student is only in these classes now: {emma_enrolled}")
     else:
         print(f"Student not enrolled in {drop_course_code}. Cannot be dropped.")
+
+# print students in the class EECE2140
+print(EECE2140.get_enrolled_students())
     
