@@ -40,7 +40,7 @@ class Student:
     
     def enroll(self, course):
         if course.add_student(self):
-            self.enrolled_courses.append(course)
+            self.enrolled_courses.append(course.code)
             print(f"{self.name} successfully enrolled in {course.name}")
         else:
             print(f"Failed to enroll{self.name} in {course.name}: Course full.")
@@ -49,6 +49,15 @@ class Student:
        self.finished_courses.append(course)
        print(f"{self.name} has completed {course.code}.")
        
+    def get_enrolled_courses(self):
+        return self.enrolled_courses
+       
+    def drop_class(self, course_code):
+        if course_code in self.enrolled_courses:
+            self.enrolled_courses.remove(course_code)
+            print(f"{self.name} has dropped {course_code}.")
+        
+       
 # creating an object of the Student class
 emma = Student("Emma", "NU1")
 
@@ -56,6 +65,7 @@ emma = Student("Emma", "NU1")
 ENGW1110 = Course("First Year Writing","ENGW1110", 45)
 ENGW1111 = Course("Introductory First Year Writing", "ENGW1111", 40)
 ENGW3315 = Course("Interdisciplinary Advanced Writing", "ENGW3315", 40)
+EECE2140 = Course("Fundamentals of Computing for Engineers", "EECE2140", 35)
 
 # add prerequisites
 ENGW3315.add_prerequisites(ENGW1110)
@@ -64,11 +74,30 @@ ENGW3315.add_prerequisites(ENGW1111)
 # print prerequisites
 print("The prerequisites for this course are:")
 print(ENGW3315.get_prerequisites())
+print(" ")
 
 # add classes Emma took
 emma.add_classes_taken(ENGW1110)
+print(" ")
 
 # enroll Emma into class
 emma.enroll(ENGW3315)
+print(" ")
+emma.enroll(EECE2140)
+print(" ")
 
+# print enrolled classes
+print("These are the classes the student is currently enrolled in:")
+emma_enrolled = emma.get_enrolled_courses()
+print(emma_enrolled)
+print(" ")
 
+drop = input("Do you want to drop a class? Type y for yes and anything else for no. ")
+if drop.lower() == 'y':
+    drop_course_code = input("Enter the course code you want to drop: ")
+    if drop_course_code in emma_enrolled:
+        emma.drop_class(drop_course_code)
+        print(f"The student is only in these classes now: {emma_enrolled}")
+    else:
+        print(f"Student not enrolled in {drop_course_code}. Cannot be dropped.")
+    
